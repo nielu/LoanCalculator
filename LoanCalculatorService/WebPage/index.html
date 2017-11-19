@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <title>Loan Calculator App</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Loan calculator</h2>
+        <form>
+            <div class="form-group row">
+                <div class="col-xs-4">
+                    <label for="loanTypes">Loan type:</label>
+                    <select class="form-control" onchange="selectChange()" id="loanTypes"></select>
+                </div>
+                <div class="col-xs-2">
+                    <label for="interest">Interest:</label>
+                    <input class="form-control" id="interest" disabled />
+                </div>
+                <div class="col-xs-2">
+                    <label for="years">Years:</label>
+                    <input class="form-control" id="years" />
+                </div>
+                <div class="col-xs-2">
+                    <label for="amount">Amount:</label>
+                    <input class="form-control" id="amount" />
+                </div>
+            </div>
+            <button type="button" onclick="calculateLoan()" id="executeButton" class="btn btn-default center-block" disabled>Execute</button>
+        </form>
+
+        <table class="table table-hover" id="paymentsTable">
+            <thead>
+                <tr>
+                    <td>PaymentNo</td>
+                    <td>Capital</td>
+                    <td>Interest</td>
+                    <td>Total</td>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        var getLoansUri = '../api/Loan/GetLoanTypes'
+        var getInterstUri = '../api/Loan/GetInterest'
+        var getPaymentsUri = '../api/Loan/ReturnPayments'
+
+        //as per SO solution
+        function round(value) {
+            value = +value;
+
+            if (isNaN(value))
+                return NaN;
+
+            // Shift
+            value = value.toString().split('e');
+            value = Math.round(+(value[0] + 'e' + (value[1] ? (+value[1] + 2) : 2)));
+
+            // Shift back
+            value = value.toString().split('e');
+            return (+(value[0] + 'e' + (value[1] ? (+value[1] - 2) : -2))).toFixed(2);
+        }
+
+        $(document).ready(function () {
+            // Send an AJAX request
+            $.getJSON(getLoansUri)
+                .done(function (data) {
+                    // On success, 'data' contains a list of products.
+                    var list = document.getElementById("loanTypes");
+                    $.each(data, function (key, item) {
+                        // Add a list item for the product.
+                        var option = document.createElement('option');
+                        option.innerHTML = item.LoanText;
+                        option.value = item.LoanTypeID;
+                        list.appendChild(option);
+
+                    });
+                });
+        });
+
+        function calculateLoan() {
+            var table = document.getElementById("paymentsTable");
+            var loanID = document.getElementById("loanTypes").value;
+            var years = document.getElementById("years").value;
+            var amount = document.getElementById("amount").value;
+
+            $.getJSON(getPaymentsUri,
+                {
+                    LoanTypeID: loanID,
+                    NumberOfYears: years,
+                    TotalAmount: amount
+                }).done(function (data) {
+                    $('#paymentsTable').find("tr:gt(0)").remove();
+                    $.each(data, function (key, item) {
+                        var row = table.insertRow();
+                        var paymentNo = row.insertCell(0);
+                        var capital = row.insertCell(1);
+                        var interest = row.insertCell(2);
+                        var total = row.insertCell(3);
+
+                        paymentNo.innerHTML = key + 1;
+                        capital.innerHTML = round(item.Capital);
+                        interest.innerHTML = round(item.Interest);
+                        total.innerHTML = round(item.Total);
+                    });
+                });
+
+            return false; //to stop page reloading
+        }
+
+        function selectChange() {
+            var selectedID = document.getElementById("loanTypes").value;
+            $.getJSON(getInterstUri, { LoanTypeID: selectedID }).done(function (data) {
+                var interestTextBox = document.getElementById('interest');
+                interestTextBox.value = round(data * 100);
+                document.getElementById("executeButton").disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
