@@ -2,6 +2,7 @@
 using SharedModels;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Web.Http;
 
 namespace LoanCalculatorService.Controllers
@@ -13,15 +14,37 @@ namespace LoanCalculatorService.Controllers
         [HttpGet]
         public List<Payment> ReturnPayments(Decimal TotalAmount, UInt16 NumberOfYears, UInt16 LoanTypeID)
         {
-            var loan = _db.GetLoan(LoanTypeID);
+            Loan l;
+            try
+            {
+                l = _db.GetLoan(LoanTypeID);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
 
-            return loan.CalculatePayments(TotalAmount, NumberOfYears);
+            try
+            {
+                return l.CalculatePayments(TotalAmount, NumberOfYears);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            }
         }
 
         [HttpGet]
         public Decimal GetInterest(UInt16 LoanTypeID)
         {
-            return _db.GetLoan(LoanTypeID).Interest;
+            try
+            {
+                return _db.GetLoan(LoanTypeID).Interest;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
         }
 
         [HttpGet]

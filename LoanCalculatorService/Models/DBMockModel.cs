@@ -22,7 +22,7 @@ namespace LoanCalculatorService.Models
 
         public Loan GetLoan(UInt16 LoanTypeID)
         {
-            if (LoanTypeID > LoanTable.Length)
+            if (LoanTypeID >= LoanTable.Length)
                 throw new ArgumentOutOfRangeException("LoanTypeID");
 
             return LoanTable[LoanTypeID];
