@@ -14,40 +14,45 @@ namespace SharedModels
 
         public virtual List<Payment> CalculatePayments(Decimal TotalAmount, UInt16 NumberOfYears)
         {
-            var paymentList = new List<Payment>();
-            var periodCapital = TotalAmount / NumberOfYears;
+            if (NumberOfYears * 12 > UInt16.MaxValue)
+                throw new ArgumentOutOfRangeException("CapitalizationPeriods");
 
-            for (UInt16 i = 0; i < NumberOfYears; ++i)
+            var monthlyInterest = this.Interest / 12;
+            var monthlyCapitalizationPeriods = (ushort)(NumberOfYears * 12);
+            var monthlyCapital = TotalAmount / monthlyCapitalizationPeriods;
+            var paymentList = new List<Payment>();
+
+            for (ushort i = 0; i < monthlyCapitalizationPeriods; ++i)
             {
                 var currentPayment = new Payment
                 {
                     PaymentNo = i,
-                    Capital = periodCapital,
-                    Interest = TotalAmount * this.Interest
+                    Capital = monthlyCapital,
+                    Interest = TotalAmount * monthlyInterest
                 };
                 paymentList.Add(currentPayment);
 
-                TotalAmount -= periodCapital;
+                TotalAmount -= monthlyCapital;
             }
 
             return paymentList;
         }
     }
 
-    public class CarLoanMonthly : Loan
+    public class LoanQuaterly : Loan
     {
-        public CarLoanMonthly(Decimal Interest) : base (Interest)
+        public LoanQuaterly(Decimal Interest) : base (Interest)
         {
         }
 
-        //since we calculate interest rate monthly,
+        //since we calculate interest rate quaterly, override default monthly calcuation
         public override List<Payment> CalculatePayments(Decimal TotalAmount, UInt16 NumberOfYears)
         {
-            if (NumberOfYears * 12 > UInt16.MaxValue)
+            if (NumberOfYears * 4 > UInt16.MaxValue)
                 throw new ArgumentOutOfRangeException("CapitalizationPeriods");
 
-            var monthlyInterest = this.Interest / 12;
-            var monthlyCapitalizationPeriods = (ushort)(NumberOfYears * 12);
+            var monthlyInterest = this.Interest / 4;
+            var monthlyCapitalizationPeriods = (ushort)(NumberOfYears * 4);
             var monthlyCapital = TotalAmount / monthlyCapitalizationPeriods;
             var paymentList = new List<Payment>();
 

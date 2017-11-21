@@ -60,11 +60,15 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\LoanTests.cs" />
     <Compile Include="ServiceTests\LoanControllerUnitTest.cs" />
     <Compile Include="DesktopClientTests\PresenterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ReturnPayments_01.GenericTest">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="VerifyEndpoint_01.GenericTest">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

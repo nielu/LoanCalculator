@@ -10,14 +10,14 @@ namespace LoanCalculatorService.Models
         {
             new LoanType {LoanTypeID = 0, LoanText = "House" },
             new LoanType {LoanTypeID = 1, LoanText = "Car" },
-            new LoanType {LoanTypeID = 2, LoanText = "Car monthly interest"}
+            new LoanType {LoanTypeID = 2, LoanText = "Car with quaterly interest"}
         };
 
         private Loan[] LoanTable =
         {
             new Loan(0.0314M),  //Interest as per example 3.14%
             new Loan(0.0429M),  //Interest based from bankrate.com for a new car on sept. 2017
-            new CarLoanMonthly(0.0429M)
+            new LoanQuaterly(0.0429M)
         };
 
         public Loan GetLoan(UInt16 LoanTypeID)
