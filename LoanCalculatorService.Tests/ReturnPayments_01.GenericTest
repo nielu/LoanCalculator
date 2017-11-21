@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<GenericTest name="ReturnPayments_01" storage="c:\users\yahu\documents\visual studio 2017\projects\banqsoft\loancalculator\loancalculatorservice.tests\returnpayments_01.generictest" id="26a80609-54a1-47e2-bf00-bbcf6abc0e15" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Command filename="C:\Users\yahu\Documents\Visual Studio 2017\Projects\banqsoft\LoanCalculator\WebServiceTestApp\bin\Debug\WebServiceTestApp.exe" arguments="ReturnPayments_01" workingDirectory="%TestOutputDirectory%" />
+  <SummaryXmlFile path="%TestOutputDirectory%\&lt;Enter summary file name here&gt;" />
+</GenericTest>

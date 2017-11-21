@@ -19,7 +19,7 @@ namespace WebServiceTestApp
                 testCase.Prepare();
                 testCase.Execute();
                 testCase.Cleanup();
-                Environment.Exit((int)TestResult- 1); //will return 0 for PASS
+                Environment.Exit((int)TestResult - 1); //will return 0 for PASS
             }
             catch (Exception e)
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using LoanCalculatorService.Controllers;
+using System.Web.Http;
 
 namespace LoanCalculatorService.Tests
 {
@@ -32,10 +33,31 @@ namespace LoanCalculatorService.Tests
         {
             var controller = new LoanController();
 
-            Assert.ThrowsException<ArgumentOutOfRangeException>
+            Assert.ThrowsException<HttpResponseException>
                 (() => controller.GetInterest(ushort.MaxValue));
         }
 
+
+        [TestMethod]
+        public void GetPaymentsTest()
+        {
+            var controller = new LoanController();
+            var availableLoans = controller.GetLoanTypes();
+
+            var payments = controller.ReturnPayments(1000M, 5, availableLoans[0].LoanTypeID);
+
+            Assert.IsTrue(payments.Count > 0);
+        }
+
+        [TestMethod]
+        public void GetPaymentExceptionTest()
+        {
+            var controller = new LoanController();
+            var loanID = controller.GetLoanTypes()[0].LoanTypeID;
+
+            Assert.ThrowsException<HttpResponseException>(
+                () => controller.ReturnPayments(1000, UInt16.MaxValue, loanID));
+        }
 
     }
 }

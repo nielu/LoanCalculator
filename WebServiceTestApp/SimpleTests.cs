@@ -15,8 +15,8 @@ namespace WebServiceTestApp
         public void Execute()
         {
             var urlToTest = "http://localhost:6356/api/Loan/InvalidRequest";
-            LogMessage($"Trying to open {urlToTest}");
 
+            LogMessage($"Trying to open {urlToTest}");
             var request = WebRequest.Create(urlToTest);
 
             try
@@ -28,13 +28,9 @@ namespace WebServiceTestApp
             catch (Exception e)
             {
                 if (e.Message.Contains("404"))
-                {
                     LogMessage("Request returned 404, as expected", LogLevel.PASS);
-                }
                 else
-                {
                     LogMessage($"Unrecognized exception was returned. {e.ToString()}", LogLevel.FAIL);
-                }
             }
             
         }
